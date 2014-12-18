@@ -1,0 +1,103 @@
+.header {
+  padding-top: 20px; }
+  .header #logo {
+    float: left; }
+  .header h1 {
+    float: left;
+    padding: 13px 0 0 25px; }
+
+.main {
+  clear: both; }
+
+.initially-hidden {
+  display: none; }
+
+p.help-block {
+  font-size: 12px; }
+
+.question > p.help-block {
+  margin-top: -5px; }
+
+.question {
+  margin-top: 20px; }
+
+.question > label + div.radio {
+  margin-top: 0px; }
+
+label.error {
+  color: #d83820;
+  font-style: italic; }
+
+.table-hover {
+  cursor: pointer; }
+
+.table-sm {
+  font-size: 12px; }
+
+.table-striped > tbody > tr.header-row > td {
+  background-color: black;
+  color: white; }
+
+.form-control::-moz-placeholder {
+  color: #bbbbbb;
+  opacity: 1; }
+
+.form-control:-ms-input-placeholder {
+  color: #bbbbbb; }
+
+.form-control::-webkit-input-placeholder {
+  color: #bbbbbb; }
+
+#form-modal .checkbox {
+  padding-top: 21px; }
+
+.header {
+  position: relative; }
+
+.session-header {
+  font-size: 12px;
+  position: absolute;
+  top: 10px;
+  right: 0; }
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto; }
+  .form-signin .form-signin-heading {
+    margin-bottom: 10px; }
+  .form-signin .form-control {
+    position: relative;
+    height: auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px; }
+  .form-signin .form-control:focus {
+    z-index: 2; }
+  .form-signin input[type="text"] {
+    margin-bottom: 5px; }
+
+.alert {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 80px;
+  width: 80%; }
+
+.btn-right {
+  float: right;
+  margin-top: 10px; }
+
+.when-finished {
+  margin-top: 20px;
+  color: #aaa; }
+
+.tighter-checkbox, #form-modal .tighter-checkbox {
+  padding-top: 0px; }
+
+.align-left {
+  float: left; }
+
+tfoot.totals td {
+  font-weight: bold; }

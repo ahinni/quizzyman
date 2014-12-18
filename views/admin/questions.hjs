@@ -1,0 +1,91 @@
+<div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-lablledby="Question" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Question</h4>
+      </div>
+      <div class="modal-body">
+        <form id="main-form" role="form">
+          <div class="form-group form-group-sm">
+            <label class="control-label" for="question">The Question</label>
+            <input type="text" name="question" class="form-control" placeholder="Enter your question" required>
+          </div>
+          <div class="form-group form-group-sm">
+            <label class="control-label" for="choices">Choices</label>
+            <input type="text" name="choices" class="form-control" placeholder="Enter your choices in JSON" required>
+          </div>
+          <div class="form-group form-group-sm">
+            <label class="control-label" for="correct_answer">Correct Answer</label>
+            <input type="text" name="correct_answer" class="form-control" placeholder="Enter the correct answer" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary button-save">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<a id="add-button" data-toggle="modal" href="#form-modal" class="btn btn-primary btn-lg btn-right">Add</a>
+<table id="questions-table" class="table table-condensed table-striped table-dark-header table-hover table-sm">
+</table>
+
+{{#yield-scripts}}
+<script type="text/javascript">
+
+  var Question = Backbone.Model.extend({
+    urlRoot: '/admin/questions',
+    initialize: function () {
+      this.on('updated', function () {
+        this.save();
+      });
+    }
+  });
+
+  var QuestionCollection = Backbone.Collection.extend({
+    model: Question,
+
+    initialize: function () {
+      var self = this;
+      this.on('add', function (model) {
+        model.save();
+      });
+      this.on('error', function (model, error) {
+        model.destroy();
+        window.alert(error.responseText);
+      });
+    }
+
+  });
+
+  var questions = new QuestionCollection({{{raw_questions}}});
+
+  var questions_view = new TableView({
+    collection: questions,
+    el: '#questions-table',
+    can_edit: true,
+    eventer: new CrudController({
+      modal: '#form-modal',
+      collection: questions,
+      validate: {}
+    }),
+    headers: [
+      ['question','Question'],
+      ['choices','Choices'],
+      ['correct_answer', 'Correct Answer']
+    ],
+    formatters: {
+      choices: JSON.stringify
+    }
+  });
+  questions_view.render();
+
+  $('.modal-form .button-save').click( function () {
+    $(this).parents('.modal-form').find('form').submit();
+  });
+
+</script>
+{{/yield-scripts}}

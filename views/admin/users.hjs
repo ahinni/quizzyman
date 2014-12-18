@@ -1,0 +1,167 @@
+<ul class="pagination">
+  {{#pages}}
+    <li class="{{state}}"> <a href="/admin/users?page={{page}}">{{{label}}}</a> </li>
+  {{/pages}}
+</ul>
+
+
+<div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-lablledby="User" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">User</h4>
+      </div>
+      <div class="modal-body">
+        <form id="main-form" role="form">
+          <div class="form-group form-group-sm">
+            <label class="control-label" for="name">Full Name</label>
+            <input type="text" name="name" class="form-control" placeholder="Enter user's full name" required>
+          </div>
+          <div class="form-group form-group-sm">
+            <label class="control-label" for="username">Username/Login</label>
+            <input type="text" name="username" class="form-control" placeholder="Enter username address for login" required>
+          </div>
+          <div id="password-group" class="form-group form-group-sm">
+            <label class="control-label" for="password">Password</label>
+            <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+          </div>
+
+          <fieldset>
+            <legend>Roles</legend>
+            <div class="checkbox tighter-checkbox">
+              <label>
+                <input name="is_admin" type="checkbox"> Admin
+              </label>
+            </div>
+          </fieldset>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <a id="change-password-link" class="align-left" data-toggle="modal" href="#form-password">Change Password</a>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary button-save">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="form-password" tabindex="-1" role="dialog" aria-lablledby="Change Password" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Change Password</h4>
+      </div>
+      <div class="modal-body">
+        <form id="password-form" role="form" method="post" action="/admin/update_password">
+          <div class="form-group form-group-sm">
+            <label class="control-label" for="password">Password</label>
+            <input id="password" type="password" name="password" class="form-control" placeholder="Enter new password">
+          </div>
+          <div class="form-group form-group-sm">
+            <label class="control-label" for="password_confirm">Password Confirm</label>
+            <input type="password" name="password_confirm" class="form-control" placeholder="Enter same password again">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="button-change-password">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<a id="add-button" data-toggle="modal" href="#form-modal" class="btn btn-primary btn-lg btn-right">Add</a>
+
+<table id="users-table" class="table table-condensed table-striped table-dark-header table-hover table-sm">
+</table>
+
+{{#yield-scripts}}
+<script type="text/javascript">
+
+  var User = Backbone.Model.extend({
+    urlRoot: '/admin/users',
+    initialize: function () {
+      this.on('updated', function () {
+        this.save();
+      });
+    }
+  });
+
+  var UserCollection = Backbone.Collection.extend({
+    model: User,
+
+    initialize: function () {
+      var self = this;
+      this.on('add', function (model) {
+        model.save();
+      });
+      this.on('error', function (model, error) {
+        model.destroy();
+        window.alert(error.responseText);
+      });
+    }
+
+  });
+
+  var users = new UserCollection({{{raw_users}}});
+
+  var users_view = new TableView({
+    collection: users,
+    el: '#users-table',
+    can_edit: true,
+    eventer: new CrudController({
+      modal: '#form-modal',
+      collection: users,
+      validate: {}
+    }),
+    headers: [
+      ['username','Username'],
+      ['name', 'Name'],
+      ['roles', 'Roles']
+    ],
+    formatters: {
+    }
+  });
+  users_view.eventer.on('modal:show', function (currentModel) {
+    $('#password-group').toggle(currentModel === undefined);
+    $('#change-password-link').toggle(currentModel !== undefined);
+  });
+  users_view.render();
+
+  var password_form_validator = $('#password-form').validate({
+    rules: {
+      password: "required",
+      password_confirm: {
+        equalTo: "#password"
+      }
+    },
+    submitHandler: function (form) {
+      var data = formToHash(form);
+      var model = users_view.eventer.modalView.currentModel;
+      $.post('/admin/change_password/'+model.id, data, function (result) {
+        $('#form-password').modal('hide');
+        $('#form-modal').modal('hide');
+        model.trigger('change');
+      }, 'json');
+    }
+  });
+
+  $("#form-password").on("show.bs.modal", function() {
+    password_form_validator.resetForm();
+    populateFormFieldsFromObject('#password-form', { password: '', password_confirm: '' });
+  });
+
+  $('#button-change-password').click( function () {
+    $('#password-form').submit();
+  });
+
+  $('.modal-form .button-save').click( function () {
+    $(this).parents('.modal-form').find('form').submit();
+  });
+
+</script>
+{{/yield-scripts}}

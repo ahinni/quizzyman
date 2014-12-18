@@ -1,0 +1,11 @@
+<div class="collapse navbar-collapse">
+  <ul class="nav navbar-nav navbar-left">
+  {{#user.is_admin}}
+    <li><a href="/admin/questions">Questions</a></li>
+    <li><a href="/admin/users">Users</a></li>
+  {{/user.is_admin}}
+  </ul>
+  {{#user}}
+    <p class="navbar-text navbar-right">{{name}} - <a href="/logout" class="navbar-link">Logout</a></p>
+  {{/user}}
+</div>

@@ -1,0 +1,9 @@
+.DS_Store
+.sass-cache/**/*
+.tmp
+log/*.log
+imports/
+backups/
+node_modules/
+npm-debug.log
+config/settings.js
