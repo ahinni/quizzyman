@@ -59,6 +59,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
+app.get('/questions/:index', routes.question);
 app.get('/logout', function(req, res) {
   req.logout();
   res.redirect('/');

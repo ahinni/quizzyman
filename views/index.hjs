@@ -1,1 +1,3 @@
-<h1>Hi Noah!</h1>
+<h1>Quizzy Man!</h1>
+<p class="lead">Welcome to Quizzy Man. Press the big button to get started!</p>
+<a href="/questions/0" class="btn btn-primary btn-lg">Start Quiz</a>
