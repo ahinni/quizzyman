@@ -13,7 +13,7 @@
           </div>
           <div class="form-group form-group-sm">
             <label class="control-label" for="choices">Choices</label>
-            <input type="text" name="choices" class="form-control" placeholder="Enter your choices in JSON" required>
+            <input type="text" name="choices" class="form-control jsonarray" placeholder="Enter your choices in JSON" required>
           </div>
           <div class="form-group form-group-sm">
             <label class="control-label" for="correct_answer">Correct Answer</label>
@@ -35,6 +35,27 @@
 
 {{#yield-scripts}}
 <script type="text/javascript">
+
+
+  $.validator.addMethod("jsonarray", function(value, element) {
+      var val;
+      try {
+        val = JSON.parse(value);
+      } catch (e) {
+        return false;
+      }
+
+      return _.isArray(val);
+      }, "Please enter a valid JSON array."
+  );
+
+  // connect it to a css class
+  $.validator.addClassRules({
+      jsonarray : { jsonarray : true }
+  });
+
+
+
 
   var Question = Backbone.Model.extend({
     urlRoot: '/admin/questions',
@@ -70,7 +91,9 @@
     eventer: new CrudController({
       modal: '#form-modal',
       collection: questions,
-      validate: {}
+      validate: {
+        
+      }
     }),
     headers: [
       ['question','Question'],
