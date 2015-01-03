@@ -1,6 +1,6 @@
 {{#question}}
 <p>{{question}}</p>
-{{#choices}}
-  <p><a href="#" class="btn btn-success">{{.}}</a></p>
-{{/choices}}
+{{#coloredChoices}}
+  <p><a href="#" class="btn btn-{{color}}">{{value}}</a></p>
+{{/coloredChoices}}
 {{/question}}
